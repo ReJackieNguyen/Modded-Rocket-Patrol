@@ -10,20 +10,22 @@ class Play extends Phaser.Scene {
         this.load.image('starfield', './assets/starfield.png');
         // load spritesheet
         this.load.spritesheet('explosion', './assets/explosion.png', {frameWidth: 64, frameHeight: 32, startFrame: 0, endFrame: 9});
+        // load particle 
+        this.load.image('spark', './assets/particles/purple.png');      
     }
 
     create() {
         // place tile sprite
         this.starfield = this.add.tileSprite(0, 0, 640, 480, 'starfield').setOrigin(0, 0);
 
-        // green UI background
-        this.add.rectangle(0, borderUISize + borderPadding, game.config.width, borderUISize * 2, 0x00FF00).setOrigin(0, 0);
+        // pastel red UI background
+        this.add.rectangle(0, borderUISize + borderPadding, game.config.width, borderUISize * 2, 0xFF4545).setOrigin(0, 0);
         
-        // white borders
-        this.add.rectangle(0, 0, game.config.width, borderUISize, 0xFFFFFF).setOrigin(0, 0);
-        this.add.rectangle(0, game.config.height - borderUISize, game.config.width, borderUISize, 0xFFFFFF).setOrigin(0, 0);
-        this.add.rectangle(0, 0, borderUISize, game.config.height, 0xFFFFFF).setOrigin(0, 0);
-        this.add.rectangle(game.config.width - borderUISize, 0, borderUISize, game.config.height, 0xFFFFFF).setOrigin(0, 0);
+        // blue green borders
+        this.add.rectangle(0, 0, game.config.width, borderUISize, 0x00FEAB).setOrigin(0, 0);
+        this.add.rectangle(0, game.config.height - borderUISize, game.config.width, borderUISize, 0x00FEAB).setOrigin(0, 0);
+        this.add.rectangle(0, 0, borderUISize, game.config.height, 0x00FEAB).setOrigin(0, 0);
+        this.add.rectangle(game.config.width - borderUISize, 0, borderUISize, game.config.height, 0x00FEAB).setOrigin(0, 0);
 
         // add rocket (p1)
         this.p1Rocket = new Rocket(this, game.config.width/2, game.config.height - borderUISize - borderPadding, 'rocket').setOrigin(0.5, 0);
@@ -46,15 +48,32 @@ class Play extends Phaser.Scene {
         frameRate: 30
         });
 
+        //particles 
+        this.particles = this.add.particles('spark');
+
+        let particleConfig = {
+            x: 400, 
+            y: 300,
+            speed: 200,
+            lifespan: 500,
+            blendMode: 'ADD',
+            //maxParticles: 50,
+            scale: {start: 1, end: 0},
+            on: false,
+        };
+
+        this.emitter = this.particles.createEmitter(particleConfig);
+           
+
         // initialize score
         this.p1Score = 0;
 
         // display score
         let scoreConfig = {
-            fontFamily: 'Courier',
+            fontFamily: 'Calibri',
             fontSize: '28px',
-            backgroundColor: '#F3B141',
-            color: '#843605',
+            backgroundColor: '#FF8181',
+            color: '#FFFFFF',
             align: 'right',
             padding: {
                 top: 5,
@@ -96,7 +115,7 @@ class Play extends Phaser.Scene {
         // check collisions
         if(this.checkCollision(this.p1Rocket, this.ship03)) {
             this.p1Rocket.reset();
-            this.shipExplode(this.ship03);   
+            this.shipExplode(this.ship03); 
         }
         if (this.checkCollision(this.p1Rocket, this.ship02)) {
             this.p1Rocket.reset();
@@ -104,7 +123,7 @@ class Play extends Phaser.Scene {
          }
         if (this.checkCollision(this.p1Rocket, this.ship01)) {
             this.p1Rocket.reset();
-            this.shipExplode(this.ship01);
+            this.shipExplode(this.ship01);  
         }
     }
       
@@ -125,11 +144,13 @@ class Play extends Phaser.Scene {
         ship.alpha = 0;
         // create explosion sprite at ship's position
         let boom = this.add.sprite(ship.x, ship.y, 'explosion').setOrigin(0, 0);
-        boom.anims.play('explode');             // play explode animation
-        boom.on('animationcomplete', () => {    // callback after anim completes
-          ship.reset();                         // reset ship position
-          ship.alpha = 1;                       // make ship visible again
-          boom.destroy();                       // remove explosion sprite
+        this.particles.emitParticleAt(ship.x, ship.y, 50);                      // emit particles
+        boom.anims.play('explode');                                             // play explode animation
+        boom.on('animationcomplete', () => {                                    // callback after anim completes
+          ship.reset();                                                         // reset ship position
+          ship.alpha = 1;                                                       // make ship visible again
+          boom.destroy();                                                       // remove explosion sprite
+        
         });
         
         // score add and repaint
@@ -137,5 +158,5 @@ class Play extends Phaser.Scene {
         this.scoreLeft.text = this.p1Score; 
 
         this.sound.play('sfx_explosion');
-      }
+    }
 }
