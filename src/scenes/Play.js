@@ -48,7 +48,7 @@ class Play extends Phaser.Scene {
         frameRate: 30
         });
 
-        //particles 
+        //particles                                         
         this.particles = this.add.particles('spark');
 
         let particleConfig = {
@@ -159,3 +159,13 @@ class Play extends Phaser.Scene {
         this.sound.play('sfx_explosion');
     }
 }
+
+
+/* 
+developed in collaboration with jgaito@ucsc.edu 
+based on example from:
+https://photonstorm.github.io/phaser3-docs/Phaser.Scale.html
+https://labs.phaser.io/edit.html?src=src/game%20objects/particle%20emitter/create%20emitter.js&v=3.55.2
+https://photonstorm.github.io/phaser3-docs/Phaser.GameObjects.Particles.ParticleEmitter.html#scaleX__anchor
+https://www.youtube.com/watch?v=JSrafZXuehQ
+*/
