@@ -11,7 +11,7 @@ class Play extends Phaser.Scene {
         // load spritesheet
         this.load.spritesheet('explosion', './assets/explosion.png', {frameWidth: 64, frameHeight: 32, startFrame: 0, endFrame: 9});
         // load particle 
-        this.load.image('spark', './assets/particles/purple.png');      
+        this.load.image('spark', './assets/particles/yellow.png');      
     }
 
     create() {
@@ -56,7 +56,7 @@ class Play extends Phaser.Scene {
             y: 300,
             speed: 200,
             lifespan: 500,
-            blendMode: 'ADD',
+            //blendMode: 'ADD',
             //maxParticles: 50,
             scale: {start: 1, end: 0},
             on: false,
@@ -150,13 +150,12 @@ class Play extends Phaser.Scene {
           ship.reset();                                                         // reset ship position
           ship.alpha = 1;                                                       // make ship visible again
           boom.destroy();                                                       // remove explosion sprite
-        
         });
         
         // score add and repaint
         this.p1Score += ship.points;
         this.scoreLeft.text = this.p1Score; 
-
+        //sound
         this.sound.play('sfx_explosion');
     }
 }
